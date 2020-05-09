@@ -1,4 +1,18 @@
+import os
+import threading
+
+
 def ConnectionManager(params):
-    # Check if server is up or not
-    print("Checking if there is a server up ...")
-    # Check if socket in params is not being used...
+
+    #1. Start server
+    serverThread = ServerThread(params)
+    serverThread.start()
+
+
+class ServerThread(threading.Thread):
+    def __init__(self, params):
+        threading.Thread.__init__(self)
+        self.params = params
+
+    def run(self):
+        os.system(f"python3 server.py {self.params.ip_address} {self.params.port} {self.params.key}")
