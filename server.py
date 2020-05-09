@@ -4,28 +4,28 @@ import sys
 from ErrorHandler import *
 from patterns import ServerSubject, ClientObserver, Message
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-"""
-the first argument AF_INET is the address domain of the socket. This is used when we have an Internet Domain
-with any two hosts
-The second argument is the type of socket. SOCK_STREAM means that data or characters are read in a continuous flow
-"""
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-if len(sys.argv) != 4:
-    logging.error("Correct usage: script, IP address, port number, key")
-    exit()
-IP_address = str(sys.argv[1])
-Port = int(sys.argv[2])
-server_key = str(sys.argv[3]).strip()
-server.bind((IP_address, Port))
-# binds the server to an entered IP address and at the specified port number. The client must be aware of these parameters
-server.listen(100)
-# listens for 100 active connections. This number can be increased as per convenience
-list_of_clients = []
-serverSubject = ServerSubject()
-clientCounter = 0
-clients = []
+connection = True
 
+try:
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if len(sys.argv) != 4:
+        logging.error("Correct usage: script, IP address, port number, key")
+        exit()
+    IP_address = str(sys.argv[1])
+    Port = int(sys.argv[2])
+    server_key = str(sys.argv[3]).strip()
+    server.bind((IP_address, Port))
+    # binds the server to an entered IP address and at the specified port number. The client must be aware of these parameters
+    server.listen(100)
+    # listens for 100 active connections. This number can be increased as per convenience
+    list_of_clients = []
+    serverSubject = ServerSubject()
+    clientCounter = 0
+    clients = []
+except:
+    serverExistsError()
+    connection = False
 
 def clientthread(conn, addr):
     conn.sendall(b"Welcome to this chatroom! Your id is " + bytes(str(clients[clientCounter - 1].id), encoding='utf8'))
@@ -69,7 +69,7 @@ def remove(connection):  # base component
         list_of_clients.remove(connection)
 
 
-while True:
+while connection:
     conn, addr = server.accept()
 
     client_key = str(conn.recv(16384))

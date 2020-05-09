@@ -2,6 +2,7 @@ import socket
 import select
 import sys
 
+msg_queue = []
 
 #Generate random id for client
 clientid = 1
@@ -11,6 +12,7 @@ clientSet = False
 credentials = "abc"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("App 2 Started")
 
 if len(sys.argv) != 3:
     print ("Correct usage: script, IP address, port number")
@@ -34,11 +36,13 @@ while True:
             
             
             print (message)
+            msg_queue.append(message)
         else:
             message = sys.stdin.readline()
             message = str(clientid) + message
             server.sendall(message.encode('utf-8'))
             sys.stdout.write("<You> ")
             sys.stdout.write(message[1:len(message)])
+            msg_queue.append(message[1:len(message)])
             sys.stdout.flush()
 server.close()
