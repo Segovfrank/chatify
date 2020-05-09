@@ -1,15 +1,7 @@
 from __future__ import annotations
 
+from ConfigParams import ConfigParams
 from ConnectionManager import ConnectionManager
-from patterns import ServerSubject, ClientObserver, Message
-
-
-class ConfigParams:
-    def __init__(self, ip_address, port, key):
-        self.ip_address = ip_address
-        self.port = port
-        self.key = key
-
 
 if __name__ == "__main__":
     # The client code.
